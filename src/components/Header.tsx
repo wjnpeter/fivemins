@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from "lodash";
 
 import { Button, Toolbar, AppBar, Avatar, Box, WithStyles, createStyles, Select, MenuItem } from '@material-ui/core';
 import { withStyles, Theme } from '@material-ui/core/styles';
@@ -39,8 +40,8 @@ function Header(props: Props) {
 
   const handleExitClick = () => {
     firebase.auth().signOut()
-   
-    document.location.href="/";
+
+    document.location.href = "/";
   }
 
   return <>
@@ -60,9 +61,12 @@ function Header(props: Props) {
             }}
             onChange={(e) => props.onCollectionTypeChange(e.target.value)}
           >
-            <MenuItem value={ContentType.Tour} >{ContentType.Tour}</MenuItem>
-            <MenuItem value={ContentType.Location}>{ContentType.Location}</MenuItem>
-            <MenuItem value={ContentType.Town}>{ContentType.Town}</MenuItem>
+            {
+              _.values(ContentType).map((v: string) => 
+                <MenuItem key={v} value={v} >{v}</MenuItem>
+              )
+            }
+            
           </Select>
 
           <Box style={{ display: "flex", alignItems: "center" }}>

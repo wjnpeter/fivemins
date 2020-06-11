@@ -7,16 +7,14 @@ import { WithStyles, createStyles, Grid, Paper, Snackbar, Container } from '@mat
 import { withStyles, Theme } from '@material-ui/core/styles';
 
 import { dbClient, CRUD } from '../utils/dbClient'
+import { storage } from "../utils/firebaseClient"
 import { tableIcons } from './TableIcons'
 import DetailPanel from './DetailPanel'
-import { TourView, TownView, LocView, readableKey } from '../utils/tableHelper'
+import { PodcastView, SpeakerView, readableKey } from '../utils/tableHelper'
 
 export enum ContentType {
-  Summary = "Summary",
-  User = "User",
-  Town = "Town",
-  Tour = "Tour",
-  Location = "Location",
+  Podcast = "Podcast",
+  Speaker = "Speaker",
 }
 
 interface Props extends WithStyles<typeof styles> {
@@ -31,6 +29,31 @@ interface TableData {
   data: any[];
 }
 
+const uploadFileIfNeeded = (newData: any) => {
+  return new Promise(async (resolve, reject) => {
+
+    const ks = _.keys(newData)
+    for (let i = 0; i < ks.length; ++i) {
+      const k = ks[i]
+      const v = newData[k]
+
+      if (v instanceof File) {
+        const metaData = { 'contentType': v.type }
+
+        const fileRef = storage.ref().child(k + "/" + v.name)
+        await fileRef.put(v, metaData)
+          .then((snap) => {
+            newData[k] = snap.ref.fullPath
+          })
+          .catch((error) => reject(error));
+      }
+    }
+
+    resolve();
+  })
+
+}
+
 function MainContent(props: Props) {
   const [tableData, setTableData] = React.useState<TableData>({
     columns: [],
@@ -42,27 +65,23 @@ function MainContent(props: Props) {
 
 
   const dbFetcher = useCallback(() => {
-    if (props.tableType === ContentType.Tour) {
-      return new dbClient.TourFetcher()
-    } else if (props.tableType === ContentType.Town) {
-      return new dbClient.TownFetcher()
-    } else if (props.tableType === ContentType.Location) {
-      return new dbClient.LocFetcher()
+    if (props.tableType === ContentType.Podcast) {
+      return new dbClient.PodcastFetcher()
+    } else if (props.tableType === ContentType.Speaker) {
+      return new dbClient.SpeakerFetcher()
     }
 
     return new CRUD()
   }, [props.tableType])
 
   const dbView = useCallback(() => {
-    if (props.tableType === ContentType.Tour) {
-      return new TourView();
-    } else if (props.tableType === ContentType.Town) {
-      return new TownView();
-    } else if (props.tableType === ContentType.Location) {
-      return new LocView();
+    if (props.tableType === ContentType.Podcast) {
+      return new PodcastView();
+    } else if (props.tableType === ContentType.Speaker) {
+      return new SpeakerView();
     }
 
-    return new TownView()
+    return new PodcastView()
   }, [props.tableType])
 
   // READ
@@ -106,8 +125,10 @@ function MainContent(props: Props) {
 
   // CREATE
 
-  const handleRowAdd = (newData: any) => {
+  const handleRowAdd = async (newData: any) => {
     setLoading(true)
+
+    await uploadFileIfNeeded(newData)
 
     const data = _.clone(newData)
     delete data.id
@@ -135,8 +156,10 @@ function MainContent(props: Props) {
 
   // UPDATE
 
-  const handleRowUpdate = (newData: any) => {
+  const handleRowUpdate = async (newData: any) => {
     setLoading(true)
+
+    await uploadFileIfNeeded(newData)
 
     const data = _.clone(newData)
     delete data.id

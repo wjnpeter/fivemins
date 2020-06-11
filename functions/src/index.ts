@@ -1,4 +1,4 @@
-import { TourTransformer, LocTransformer, TownTransformer } from "./helper";
+import { PodcastTransformer, SpeakerTransformer } from "./helper";
 
 const functions = require('firebase-functions');
 
@@ -7,9 +7,8 @@ admin.initializeApp();
 
 const db = admin.firestore();
 
-const toursRef = db.collection('tours');
-const locationsRef = db.collection('locations');
-const townsRef = db.collection('towns');
+const podcastRef = db.collection('podcast');
+const speakerRef = db.collection('speaker');
 
 const checkAuth = (context: any) => {
   if (!context.auth) {
@@ -87,88 +86,58 @@ function performDelete(collectionRef: any, dbData: any, context: any) {
     .then((res: any) => res.writeTime.toDate());
 }
 
-// Tour
+// Podcast
 
-exports.readTour = functions.https.onCall((apiData: any, context: any) => {
+exports.readPodcast = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  return performGet(toursRef, dbData, context)
+  return performGet(podcastRef, dbData, context)
 });
 
-exports.createTour = functions.https.onCall((apiData: any, context: any) => {
+exports.createPodcast = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  dbData.data = TourTransformer.toDB(apiData.data)
-  return performAdd(toursRef, dbData, context)
+  dbData.data = PodcastTransformer.toDB(apiData.data)
+  return performAdd(podcastRef, dbData, context)
 });
 
-exports.updateTour = functions.https.onCall((apiData: any, context: any) => {
+exports.updatePodcast = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  dbData.data = TourTransformer.toDB(apiData.data)
-  return performUpdate(toursRef, dbData, context)
+  dbData.data = PodcastTransformer.toDB(apiData.data)
+  return performUpdate(podcastRef, dbData, context)
 });
 
-exports.deleteTour = functions.https.onCall((apiData: any, context: any) => {
+exports.deletePodcast = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  return performDelete(toursRef, dbData, context)
+  return performDelete(podcastRef, dbData, context)
 });
 
-// Location
+// Speaker
 
-exports.readLocation = functions.https.onCall((apiData: any, context: any) => {
+exports.readSpeaker = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  return performGet(locationsRef, dbData, context)
+  return performGet(speakerRef, dbData, context)
     .then((docs: any) => docs.map((doc: any) => {
       return {
         id: doc.id,
-        data: LocTransformer.fromDB(doc.data)
+        data: SpeakerTransformer.fromDB(doc.data)
       }
     }));
 });
 
-exports.createLocation = functions.https.onCall((apiData: any, context: any) => {
+exports.createSpeaker = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  dbData.data = LocTransformer.toDB(apiData.data)
-  return performAdd(locationsRef, dbData, context)
+  dbData.data = SpeakerTransformer.toDB(apiData.data)
+  return performAdd(speakerRef, dbData, context)
 });
 
-exports.updateLocation = functions.https.onCall((apiData: any, context: any) => {
+exports.updateSpeaker = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  dbData.data = LocTransformer.toDB(apiData.data)
-  return performUpdate(locationsRef, dbData, context)
+  dbData.data = SpeakerTransformer.toDB(apiData.data)
+  return performUpdate(speakerRef, dbData, context)
 });
 
-exports.deleteLocation = functions.https.onCall((apiData: any, context: any) => {
+exports.deleteSpeaker = functions.https.onCall((apiData: any, context: any) => {
   const dbData = apiData
-  return performDelete(locationsRef, dbData, context)
-});
-
-// Town
-
-exports.readTown = functions.https.onCall((apiData: any, context: any) => {
-  const dbData = apiData
-  return performGet(townsRef, dbData, context)
-    .then((docs: any) => docs.map((doc: any) => {
-      return {
-        id: doc.id,
-        data: TownTransformer.fromDB(doc.data)
-      }
-    }));
-});
-
-exports.createTown = functions.https.onCall((apiData: any, context: any) => {
-  const dbData = apiData
-  dbData.data = TownTransformer.toDB(apiData.data)
-  return performAdd(townsRef, dbData, context)
-});
-
-exports.updateTown = functions.https.onCall((apiData: any, context: any) => {
-  const dbData = apiData
-  dbData.data = TownTransformer.toDB(apiData.data)
-  return performUpdate(townsRef, dbData, context)
-});
-
-exports.deleteTown = functions.https.onCall((apiData: any, context: any) => {
-  const dbData = apiData
-  return performDelete(townsRef, dbData, context)
+  return performDelete(speakerRef, dbData, context)
 });
 
 // Auth

@@ -6,7 +6,7 @@ import { WithStyles, createStyles, Button, TextField, Paper, Grid, Checkbox, Typ
 import { withStyles, Theme } from '@material-ui/core/styles';
 
 import { readableKey, KeyDictionary, fieldStyle, FieldProps } from '../utils/tableHelper'
-import SelectField from "./SelectField";
+import StringFieldWrap from "./StringFieldWrap";
 
 
 interface Props extends WithStyles<typeof styles> {
@@ -93,22 +93,30 @@ function DetailPanel(props: Props) {
 
   const details = view.dbKeys().map((field: string) => {
     const fieldType = view[field]
+
+    let fieldValue = data[field]
+    if (fieldValue instanceof File) {
+      fieldValue = fieldValue.name
+    } else if (field.includes("Geo") && !fieldValue) {
+      fieldValue = view.makeGeo(data);
+    }
+
     const fieldProps = {
       helperText: view.helperText(field),
       key: field,
-      value: data[field],
+      value: fieldValue,
       field: field,
       onFieldChange: handleFieldChange
     }
     if (fieldType === "string") {
-      return <SelectField {...fieldProps} />
+      return <StringFieldWrap {...fieldProps} />
     } else if (fieldType === "numeric") {
       return <NumberField {...fieldProps} />
     } else if (fieldType === "boolean") {
       return <BooleanField {...fieldProps} />
     }
 
-    return <></>
+    return <div key={field}></div>
   })
 
   return <>

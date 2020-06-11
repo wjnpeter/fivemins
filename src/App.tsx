@@ -5,9 +5,9 @@ import MainContent, { ContentType } from './components/MainContent'
 import withAuth from './utils/withAuth'
 
 function App() {
-  const [collectionType, setCollectionType] = useState(ContentType.Tour)
+  const [collectionType, setCollectionType] = useState(ContentType.Podcast)
 
-  useEffect(() => setCollectionType(ContentType.Tour), [])
+  useEffect(() => setCollectionType(ContentType.Podcast), [])
 
   const handleCollectionTypeChange = (t: ContentType) => {
     setCollectionType(t)

@@ -10,76 +10,54 @@ export class CRUD {
   delete(params: any): Promise<any> { return Promise.reject() }
 }
 
-class TourFetcher implements CRUD {
+class PodcastFetcher implements CRUD {
   async read(params: any) {
-    const callable = functions.httpsCallable('readTour')
+    const callable = functions.httpsCallable('readPodcast')
     return callable(params).then((res: any) => res.data);
   }
 
   async create(params: any) {
-    const callable = functions.httpsCallable('createTour')
+    const callable = functions.httpsCallable('createPodcast')
     return callable(params).then((res: any) => res.data);
   }
 
   async update(params: any) {
-    const callable = functions.httpsCallable('updateTour')
+    const callable = functions.httpsCallable('updatePodcast')
     return callable(params).then((res: any) => res.data);
   }
 
   async delete(params: any) {
-    const callable = functions.httpsCallable('deleteTour')
+    const callable = functions.httpsCallable('deletePodcast')
     return callable(params).then((res: any) => res.data);
   }
 }
 
-class LocFetcher implements CRUD {
+class SpeakerFetcher implements CRUD {
   async read(params: any) {
-    const callable = functions.httpsCallable('readLocation')
+    const callable = functions.httpsCallable('readSpeaker')
     return callable(params).then((res: any) => res.data);
   }
 
   async create(params: any) {
-    const callable = functions.httpsCallable('createLocation')
+    const callable = functions.httpsCallable('createSpeaker')
     return callable(params).then((res: any) => res.data);
   }
 
   async update(params: any) {
-    const callable = functions.httpsCallable('updateLocation')
+    const callable = functions.httpsCallable('updateSpeaker')
     return callable(params).then((res: any) => res.data);
   }
 
   async delete(params: any) {
-    const callable = functions.httpsCallable('deleteLocation')
+    const callable = functions.httpsCallable('deleteSpeaker')
     return callable(params).then((res: any) => res.data);
   }
 }
 
 
-class TownFetcher implements CRUD {
-  async read(params: any) {
-    const callable = functions.httpsCallable('readTown')
-    return callable(params).then((res: any) => res.data);
-  }
-
-  async create(params: any) {
-    const callable = functions.httpsCallable('createTown')
-    return callable(params).then((res: any) => res.data);
-  }
-
-  async update(params: any) {
-    const callable = functions.httpsCallable('updateTown')
-    return callable(params).then((res: any) => res.data);
-  }
-
-  async delete(params: any) {
-    const callable = functions.httpsCallable('deleteTown')
-    return callable(params).then((res: any) => res.data);
-  }
-}
 
 
 export const dbClient = {
-  TourFetcher,
-  LocFetcher,
-  TownFetcher,
+  PodcastFetcher,
+  SpeakerFetcher,
 }

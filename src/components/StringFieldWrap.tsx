@@ -6,6 +6,7 @@ import { withStyles, Theme } from '@material-ui/core/styles';
 
 import { dbClient } from '../utils/dbClient'
 import { readableKey, fieldStyle, FieldProps } from '../utils/tableHelper'
+import UploadField from "./UploadField"
 
 
 function StringField(props: FieldProps) {
@@ -35,64 +36,48 @@ function StringField(props: FieldProps) {
 const styles = (theme: Theme) => createStyles({
 });
 
-function SelectField(props: FieldProps) {
+function StringFieldWrap(props: FieldProps) {
+  // select control
   const [selectValues, setSelectValues] = useState([])
   const [selectValue, setSelectValue] = useState("")
+
+  // upload control
+  const [inputAcceptType, setInputAcceptType] = useState("")
   
   useEffect(() => {
     if (props.value) setSelectValue(props.value)
     else setSelectValue("")
 
   }, [props.value, selectValues])
-
+ 
   const field = props.field
 
   useEffect(() => {
     let active = true;
 
-    const townFetcher = new dbClient.TownFetcher()
-    const tourFetcher = new dbClient.TourFetcher()
+    const speakerFetcher = new dbClient.SpeakerFetcher()
+    
 
-    if (field === "tourTownName") {
-      townFetcher.read({ select: "townName" })
+    // init select
+    if (field === "podcastSpeaker") {
+      speakerFetcher.read({ select: "speakerName" })
         .then(docs => {
           if (active) {
-            setSelectValues(docs.map((doc: any) => doc.data.townName))
+            setSelectValues(docs.map((doc: any) => doc.data.speakerName))
           }
         })
-    } else if (field === "tourTownState") {
-      townFetcher.read({ select: "townState" })
-        .then(docs => {
-          if (active) {
-            setSelectValues(docs.map((doc: any) => doc.data.townState))
-          }
-        })
-    } else if (field === "locTourName") {
-      tourFetcher.read({ select: "tourName" })
-        .then(docs => {
-          if (active) {
-            setSelectValues(docs.map((doc: any) => doc.data.tourName))
-          }
-        })
-    } else if (field === "locTownName") {
-      townFetcher.read({ select: "townName" })
-        .then(docs => {
-          if (active) {
-            setSelectValues(docs.map((doc: any) => doc.data.townName))
-          }
-        })
-    } else if (field === "locTownState") {
-      townFetcher.read({ select: "townState" })
-        .then(docs => {
-          if (active) {
-            setSelectValues(docs.map((doc: any) => doc.data.townState))
-          }
-        })
-    }
+    } 
+
+    // init upload
+    // audio/*, video/*
+    if (field === "podcastGSUrl") {
+      setInputAcceptType("audio/*")
+    } 
 
     return () => { active = false };
   }, [field])
 
+  // generate select component
   if (!_.isEmpty(selectValues)) {
     const selectItems = _.uniq(selectValues).map((v: string, i: number) => {
       return <MenuItem value={v} key={i} children={v} />
@@ -118,10 +103,14 @@ function SelectField(props: FieldProps) {
         {selectItems}
       </Select>
     </FormControl>
+  }
 
+  // generate upload component
+  if (!_.isEmpty(inputAcceptType)) {
+    return <UploadField inputAcceptType={inputAcceptType} {...props} />
   }
   
   return <StringField {...props} />
 }
 
-export default withStyles(styles)(SelectField)
+export default withStyles(styles)(StringFieldWrap)

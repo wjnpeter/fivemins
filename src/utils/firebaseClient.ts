@@ -5,15 +5,16 @@ import * as firebase from 'firebase/app';
 import "firebase/firestore";
 import "firebase/functions";
 import "firebase/auth";
+import "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAS0EyVPaX1nPiznJJpA9EzRz8CDW3-Og8",
-  authDomain: "cubage-22484.firebaseapp.com",
-  databaseURL: "https://cubage-22484.firebaseio.com",
-  projectId: "cubage-22484",
-  storageBucket: "cubage-22484.appspot.com",
-  messagingSenderId: "890109238125",
-  appId: "1:890109238125:web:aced8d4da556b24c9d5864"
+  apiKey: "AIzaSyB7yHDV7BGBGo4EVs97kjD1tKO3_5xMI-s",
+  authDomain: "fivemin-fef5c.firebaseapp.com",
+  databaseURL: "https://fivemin-fef5c.firebaseio.com",
+  projectId: "fivemin-fef5c",
+  storageBucket: "fivemin-fef5c.appspot.com",
+  messagingSenderId: "867889751170",
+  appId: "1:867889751170:web:f458354c252adb19b3809b"
 };
 
 
@@ -22,8 +23,9 @@ if (typeof window !== 'undefined' && !firebase.apps.length) {
 }
 
 export const functions = firebase.app().functions();
+export const storage = firebase.app().storage();
 
 // for local test
-// functions.useFunctionsEmulator('http://localhost:5001')
+functions.useFunctionsEmulator('http://localhost:5001')
 
 export default firebase
