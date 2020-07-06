@@ -13,7 +13,7 @@ export class CRUD {
 class PodcastFetcher implements CRUD {
   async read(params: any) {
     const callable = functions.httpsCallable('readPodcast')
-    return callable(params).then((res: any) => res.data);
+    return callable(params).then((res: any) => res.data );
   }
 
   async create(params: any) {
@@ -54,10 +54,44 @@ class SpeakerFetcher implements CRUD {
   }
 }
 
+class PromoFetcher implements CRUD {
+  async read(params: any) {
+    const callable = functions.httpsCallable('readPromo')
+    return callable(params).then((res: any) => res.data);
+  }
 
+  async create(params: any) {
+    const callable = functions.httpsCallable('createPromo')
+    return callable(params).then((res: any) => res.data);
+  }
+
+  async update(params: any) {
+    const callable = functions.httpsCallable('updatePromo')
+    return callable(params).then((res: any) => res.data);
+  }
+
+  async delete(params: any) {
+    const callable = functions.httpsCallable('deletePromo')
+    return callable(params).then((res: any) => res.data);
+  }
+}
+
+class CategoryFetcher {
+  async category() {
+    const callable = functions.httpsCallable('categories')
+    return callable().then((res: any) => res.data);
+  }
+
+  async subCategory() {
+    const callable = functions.httpsCallable('subCategories')
+    return callable().then((res: any) => res.data);
+  }
+}
 
 
 export const dbClient = {
   PodcastFetcher,
   SpeakerFetcher,
+  PromoFetcher,
+  CategoryFetcher
 }

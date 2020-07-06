@@ -20,11 +20,12 @@ export class PodcastView extends DefaultView {
   podcastName = "string"
   podcastCategory = "string"     // select
   podcastSubcategory = "string"  // select
-  podcastSpeaker = "string"      // select, refer to speaker collection
-  podcastAvailable = "date"      
-  podcastGSUrl = "string"        // upload file
+  podcastAvailable = "numeric"      
+  podcastFile = "string"        // upload file
   podcastDesc = "string"
-
+  podcastSpeakerName = "string"      // select, refer to speaker collection
+  podcastTrial = "boolean"      // select, refer to speaker collection
+  
   summaryKeys() { return ["podcastName", "podcastCategory", "podcastSubcategory"] }
 
   helperText(field: string) {
@@ -36,7 +37,7 @@ export class PodcastView extends DefaultView {
 export class SpeakerView extends DefaultView {
   speakerName = "string"
   speakerAvatar = "string"     // select
-  speakerUrl = "string" 
+  speakerLink = "string" 
   
   summaryKeys() { return ["speakerName"] }
 
@@ -45,13 +46,24 @@ export class SpeakerView extends DefaultView {
   }
 }
 
+export class PromoView extends DefaultView {
+  promoCode = "string"
+  promoUsed = "numeric"
+  promoMax = "numeric" 
+  
+  summaryKeys() { return ["promoCode", "promoUsed", "promoMax"] }
+
+  helperText(field: string) {
+    return this[field]
+  }
+}
 
 export const readableKey = (k: string): string => {
   return _.words(k).map((w) => _.capitalize(w)).join(' ')
 }
 
 export const fieldStyle = {
-  minWidth: "43%",
+  minWidth: "60%",
   margin: "0.5rem auto"
 }
 

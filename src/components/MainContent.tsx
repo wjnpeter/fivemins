@@ -10,11 +10,12 @@ import { dbClient, CRUD } from '../utils/dbClient'
 import { storage } from "../utils/firebaseClient"
 import { tableIcons } from './TableIcons'
 import DetailPanel from './DetailPanel'
-import { PodcastView, SpeakerView, readableKey } from '../utils/tableHelper'
+import { PodcastView, SpeakerView, PromoView, readableKey } from '../utils/tableHelper'
 
 export enum ContentType {
   Podcast = "Podcast",
   Speaker = "Speaker",
+  Promo = "Promo"
 }
 
 interface Props extends WithStyles<typeof styles> {
@@ -69,6 +70,8 @@ function MainContent(props: Props) {
       return new dbClient.PodcastFetcher()
     } else if (props.tableType === ContentType.Speaker) {
       return new dbClient.SpeakerFetcher()
+    } else if (props.tableType === ContentType.Promo) {
+      return new dbClient.PromoFetcher()
     }
 
     return new CRUD()
@@ -79,6 +82,8 @@ function MainContent(props: Props) {
       return new PodcastView();
     } else if (props.tableType === ContentType.Speaker) {
       return new SpeakerView();
+    } else if (props.tableType === ContentType.Promo) {
+      return new PromoView()
     }
 
     return new PodcastView()
@@ -162,7 +167,9 @@ function MainContent(props: Props) {
     await uploadFileIfNeeded(newData)
 
     const data = _.clone(newData)
+    delete data.tableData // added from material-table
     delete data.id
+    
     dbFetcher().update({ id: newData.id, data: data })
       .then(() => {
         if (newData) {

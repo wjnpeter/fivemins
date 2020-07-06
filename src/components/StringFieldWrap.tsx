@@ -38,41 +38,58 @@ const styles = (theme: Theme) => createStyles({
 
 function StringFieldWrap(props: FieldProps) {
   // select control
-  const [selectValues, setSelectValues] = useState([])
+  const [selectValues, setSelectValues] = useState<string[]>([])
   const [selectValue, setSelectValue] = useState("")
 
   // upload control
   const [inputAcceptType, setInputAcceptType] = useState("")
-  
+
   useEffect(() => {
     if (props.value) setSelectValue(props.value)
     else setSelectValue("")
 
   }, [props.value, selectValues])
- 
+
   const field = props.field
 
   useEffect(() => {
     let active = true;
 
     const speakerFetcher = new dbClient.SpeakerFetcher()
-    
+    const categoryFetcher = new dbClient.CategoryFetcher()
 
     // init select
-    if (field === "podcastSpeaker") {
+    if (field === "podcastSpeakerName") {
       speakerFetcher.read({ select: "speakerName" })
         .then(docs => {
           if (active) {
             setSelectValues(docs.map((doc: any) => doc.data.speakerName))
           }
         })
-    } 
+    } else if (field === "podcastCategory") {
+      categoryFetcher.category()
+        .then(docs => {
+          if (active) {
+            setSelectValues(docs)
+          }
+        })
+    } else if (field === "podcastSubcategory") {
+      categoryFetcher.subCategory()
+        .then(docs => {
+          if (active) {
+            setSelectValues(docs)
+          }
+        })
+    }
 
     // init upload
     // audio/*, video/*
-    if (field === "podcastGSUrl") {
+    if (field === "podcastFile") {
       setInputAcceptType("audio/*")
-    } 
+    }
+    if (field === "speakerAvatar") {
+      setInputAcceptType("image/*")
+    }
 
     return () => { active = false };
   }, [field])
@@ -109,7 +126,7 @@ function StringFieldWrap(props: FieldProps) {
   if (!_.isEmpty(inputAcceptType)) {
     return <UploadField inputAcceptType={inputAcceptType} {...props} />
   }
-  
+
   return <StringField {...props} />
 }
 

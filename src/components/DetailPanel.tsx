@@ -26,12 +26,50 @@ const styles = (theme: Theme) => createStyles({
 
 function NumberField(props: FieldProps) {
   const [value, setValue] = useState("")
+
+  // date control
+  const [dateValue, setDateValue] = useState("")
+
   useEffect(() => {
     if (props.value) setValue(props.value)
     else setValue("")
   }, [props.value])
 
+
   const field = props.field
+
+  useEffect(() => {
+    // init date
+    if (field === "podcastAvailable") {
+      if (props.value) {
+        setDateValue(new Date(props.value * 1000).toISOString().split('T')[0])
+      } else {
+        setDateValue(new Date().toISOString().split('T')[0])
+      }
+    }
+
+  }, [field, props.value])
+
+  // generate date component
+  if (!_.isEmpty(dateValue)) {
+    return <TextField
+      style={{ width: "65%", marginRight: "0.5rem", ...fieldStyle }}
+      key={field}
+      value={dateValue}
+      type="date"
+      variant="outlined"
+      label={readableKey(field)}
+      helperText={props.helperText}
+      onChange={(e) => {
+        const newDate = new Date(e.target.value)
+        props.onFieldChange(field, newDate.getTime() / 1000)
+        setValue(e.target.value)
+      }}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  }
 
   return <TextField
     style={{ width: "65%", marginRight: "0.5rem", ...fieldStyle }}
@@ -97,7 +135,7 @@ function DetailPanel(props: Props) {
     let fieldValue = data[field]
     if (fieldValue instanceof File) {
       fieldValue = fieldValue.name
-    } else if (field.includes("Geo") && !fieldValue) {
+    } else if (field.endsWith("Geo") && !fieldValue) {
       fieldValue = view.makeGeo(data);
     }
 

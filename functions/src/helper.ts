@@ -1,4 +1,5 @@
 
+// const admin = require('firebase-admin');
 
 class DefaultTransformer {
   static fromDB(dbData: any) {
@@ -11,7 +12,36 @@ class DefaultTransformer {
 }
 
 export class PodcastTransformer extends DefaultTransformer {
-  
+  // static fromDB(dbData: any) {
+  //   console.log('222')
+  //   console.log(dbData.podcastAvailable)
+  //   if (dbData.podcastAvailable && dbData.podcastAvailable instanceof admin.firestore.Timestamp) {
+  //     dbData.podcastAvailable = dbData.podcastAvailable.seconds
+
+  //     console.log('333')
+  //     console.log(dbData.podcastAvailable)
+  //   }
+
+  //   return dbData
+  // }
+
+  // static toDB(apiData: any) {
+  //   if (apiData.where && apiData.where.lhs === "podcastAvailable") {
+  //     let apiPodcastAvailable = apiData.where.rhs
+  //     apiData.where.rhs = 
+  //   }
+
+  //   if (typeof apiData.where.podcastAvailable === 'number') {
+  //     console.log('haha')
+  //     console.log(apiData.podcastAvailable)
+  //     apiData.podcastAvailable = new admin.firestore.Timestamp(apiData.podcastAvailable, 0)
+
+  //     console.log('hehe')
+  //     console.log(apiData.podcastAvailable)
+  //   }
+
+  //   return apiData
+  // }
 }
 
 export class SpeakerTransformer extends DefaultTransformer {
@@ -37,3 +67,7 @@ export class SpeakerTransformer extends DefaultTransformer {
   }
 }
 
+
+// References
+
+// FunctionsErrorCode: "ok" | "cancelled" | "unknown" | "invalid-argument" | "deadline-exceeded" | "not-found" | "already-exists" | "permission-denied" | "resource-exhausted" | "failed-precondition" | "aborted" | "out-of-range" | "unimplemented" | "internal" | "unavailable" | "data-loss" | "unauthenticated"
