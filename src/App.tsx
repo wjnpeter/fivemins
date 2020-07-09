@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
-import Header from './components/Header'
-import MainContent, { ContentType } from './components/MainContent'
-import withAuth from './utils/withAuth'
+import Home from "./components/Home"
+import DBPortal from "./components/DBPortal"
 
 function App() {
-  const [collectionType, setCollectionType] = useState(ContentType.Podcast)
-
-  useEffect(() => setCollectionType(ContentType.Podcast), [])
-
-  const handleCollectionTypeChange = (t: ContentType) => {
-    setCollectionType(t)
-  }
 
   return <>
-    <Header collectionType={collectionType} onCollectionTypeChange={handleCollectionTypeChange} />
-
-    <MainContent tableType={collectionType} />
-
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/admin">
+          <DBPortal />
+        </Route>
+      </Switch>
+    </Router>
   </>
 }
 
-export default withAuth(App);
+export default App;
