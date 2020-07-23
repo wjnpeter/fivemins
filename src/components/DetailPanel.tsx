@@ -56,14 +56,14 @@ function NumberField(props: FieldProps) {
       style={{ width: "65%", marginRight: "0.5rem", ...fieldStyle }}
       key={field}
       value={dateValue}
-      type="date"
+      type="datetime-local"
       variant="outlined"
       label={readableKey(field)}
       helperText={props.helperText}
       onChange={(e) => {
         const newDate = new Date(e.target.value)
         props.onFieldChange(field, newDate.getTime() / 1000)
-        setValue(e.target.value)
+        setDateValue(e.target.value)
       }}
       InputLabelProps={{
         shrink: true,

@@ -1,4 +1,5 @@
 import { PodcastTransformer, SpeakerTransformer } from "./helper";
+import axios from 'axios';
 
 const _ = require('lodash')
 
@@ -301,6 +302,8 @@ exports.applyPromo = functions.https.onCall((apiData: any, context: any) => {
     .then((promo: any) => {
       if (!promo) return null
 
+      // https://firebase.google.com/docs/firestore/manage-data/add-data#web_13
+      // Increment a numeric value
       const dbData = {
         id: promo.id,
         data: { promoUsed: _.toNumber(promo.data().promoUsed) + 1 }
@@ -345,4 +348,44 @@ exports.categories = functions.https.onCall((apiData: any, context: any) => {
 
 exports.subCategories = functions.https.onCall((apiData: any, context: any) => {
   return ["wellness", "mindset", "resilience", "productivity"]
+})
+
+// iap
+
+exports.verifyAppleReceipt = functions.https.onCall(async (apiData: any, context: any) => {
+  checkAuth(context)
+
+  if (!apiData && !apiData.receipt) {
+    throw new functions.https.HttpsError('invalid-argument', 'miss receipt');
+  }
+
+  const requestBody = {
+    "receipt-data": apiData.receipt,
+    "exclude-old-transactions": true,
+    "password": "46398f23f2484980b85b7ae0d265d188"
+  }
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  let res = await axios.post("https://buy.itunes.apple.com/verifyReceipt", requestBody, config)
+
+  if (res.data.status === 21007) {
+    res = await axios.post("https://sandbox.itunes.apple.com/verifyReceipt", requestBody, config)
+  }
+
+  const resData = res.data
+
+  let isValid = false
+
+  if (resData.status === 0) {
+    const latestReceiptInfo = resData.latest_receipt_info
+    const expiresDateMS = latestReceiptInfo[0].expires_date_ms
+    isValid = expiresDateMS > Date.now()
+  }
+
+  return isValid
 })
