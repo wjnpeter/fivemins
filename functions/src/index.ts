@@ -70,7 +70,10 @@ function performGet(collectionRef: any, dbData: any, context: any) {
         filteredRef = filteredRef.where(lhs, op, rhs)
       }
     })
+  }
 
+  if (dbData && 'orderBy' in dbData) {
+    filteredRef = filteredRef.orderBy(dbData.orderBy, 'desc')
   }
 
   return filteredRef.get()

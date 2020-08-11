@@ -95,7 +95,7 @@ function MainContent(props: Props) {
     setLoading(true)
     setSelectedRow(null)
 
-    const docs = await dbFetcher().read(null)
+    const docs = await dbFetcher().read({})
     if (!_.isNil(docs)) {
       const view = dbView()
       const colKeys = view.summaryKeys()

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment'
 
 import React, { useEffect, useState } from 'react';
 
@@ -41,15 +42,16 @@ function NumberField(props: FieldProps) {
   useEffect(() => {
     // init date
     if (field === "podcastAvailable") {
+      var d = new Date()
       if (props.value) {
-        setDateValue(new Date(props.value * 1000).toISOString().split('T')[0])
-      } else {
-        setDateValue(new Date().toISOString().split('T')[0])
-      }
+        d = new Date(props.value * 1000)
+      } 
+
+      setDateValue(moment(d).format().substring(0, 16))
     }
 
   }, [field, props.value])
-
+  
   // generate date component
   if (!_.isEmpty(dateValue)) {
     return <TextField

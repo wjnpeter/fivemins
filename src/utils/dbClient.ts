@@ -12,6 +12,8 @@ export class CRUD {
 
 class PodcastFetcher implements CRUD {
   async read(params: any) {
+    params.orderBy = 'podcastAvailable'
+
     const callable = functions.httpsCallable('readPodcast')
     return callable(params).then((res: any) => res.data );
   }
